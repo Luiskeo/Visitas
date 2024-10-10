@@ -63,6 +63,7 @@ const submit = async () => {
 
     if (response.ok) {
       localStorage.setItem('token', data.token)
+      localStorage.setItem('nombre', data.usuario)
       console.log(`Biengenido ${data.usuario}`)
       toast.success(`Bienvenido ${data.usuario}`)
       await router.push({ name: 'home' })
