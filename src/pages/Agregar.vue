@@ -1,0 +1,350 @@
+<template>
+  <div class="container">
+    <form
+      @submit.prevent="submitForm"
+      class="form-horizontal"
+      autocomplete="off"
+    >
+      <h1>INGRESA VISITANTE</h1>
+      <section class="form-login row">
+        <div class="col-md-4 form-group">
+          <label for="cedula" class="control-label"><b>DOCUMENTO</b></label>
+          <input
+            v-model="formData.cedula"
+            type="number"
+            class="form-control"
+            id="cedula"
+            placeholder="Digite el número de documento"
+            @input="checkCedula"
+          />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="nombre" class="control-label">NOMBRE</label>
+          <input
+            v-model="formData.nombre"
+            type="text"
+            class="form-control"
+            id="nombre"
+            placeholder="Digite el nombre"
+          />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="apellido" class="control-label">APELLIDO</label>
+          <input
+            v-model="formData.apellido"
+            type="text"
+            class="form-control"
+            id="apellido"
+            placeholder="Digite el apellido"
+          />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="entidad" class="control-label">ENTIDAD</label>
+          <input
+            v-model="formData.entidad"
+            type="text"
+            class="form-control"
+            id="entidad"
+            placeholder="Digite la entidad de la que proviene"
+          />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="celular" class="control-label">CELULAR</label>
+          <input
+            v-model="formData.celular"
+            type="number"
+            class="form-control"
+            id="celular"
+            placeholder="Digite el celular"
+          />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="eps" class="control-label">EPS</label>
+          <input
+            v-model="formData.eps"
+            type="text"
+            class="form-control"
+            id="eps"
+            placeholder="Digite la EPS"
+          />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="numero_ficha" class="control-label"
+            >NÚMERO DE FICHA</label
+          >
+          <input
+            v-model="formData.numero_ficha"
+            type="text"
+            class="form-control"
+            id="numero_ficha"
+            placeholder="Digite el número de ficha"
+          />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="area" class="control-label">ÁREA A VISITAR</label>
+          <input
+            v-model="formData.area"
+            type="text"
+            class="form-control"
+            id="area"
+            placeholder="Digite el área que va a visitar"
+          />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="motivo_visita" class="control-label"
+            >MOTIVO DE VISITA</label
+          >
+          <input
+            v-model="formData.motivo_visita"
+            type="text"
+            class="form-control"
+            id="motivo_visita"
+            placeholder="Digite el motivo de la visita"
+          />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="dispositivo" class="control-label"
+            >DISPOSITIVO A INGRESAR</label
+          >
+          <input
+            v-model="formData.dispositivo"
+            type="text"
+            class="form-control"
+            id="dispositivo"
+            placeholder="Digite el dispositivo que ingresa"
+          />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="num_placa_dispositivo" class="control-label"
+            >NÚMERO DE LA PLACA</label
+          >
+          <input
+            v-model="formData.num_placa_dispositivo"
+            type="text"
+            class="form-control"
+            id="num_placa_dispositivo"
+            placeholder="Digite el número de placa de dispositivo"
+          />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="serial" class="control-label">NÚMERO DE SERIAL</label>
+          <input
+            v-model="formData.serial"
+            type="text"
+            class="form-control"
+            id="serial"
+            placeholder="Digite el serial"
+          />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="fecha_ingreso" class="control-label"
+            >FECHA DE INGRESO</label
+          >
+          <input
+            v-model="formData.fecha_ingreso"
+            type="datetime-local"
+            class="form-control"
+            id="fecha_ingreso"
+          />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="observaciones" class="control-label">OBSERVACIÓN</label>
+          <textarea
+            v-model="formData.observaciones"
+            id="observaciones"
+            class="form-control-observacion"
+            max="254"
+            placeholder="Digite la observación"
+          ></textarea>
+        </div>
+        <div class="col-md-12 text-center">
+          <button type="button" class="btn btn-outline-dark" @click="goBack">
+            <i class="bi bi-reply-all-fill"></i> Cancelar
+          </button>
+          <button type="submit" class="btn btn-outline-primary">
+            <i class="bi bi-person-check-fill"></i>Guardar
+          </button>
+        </div>
+      </section>
+    </form>
+    <br />
+    <hr />
+    <footer class="bg-primary text-center text-black d-inline">
+      <p>Copyright © C&C SERVICES 2024 All rights reserved.</p>
+    </footer>
+  </div>
+</template>
+
+<script setup>
+import { ref } from "vue";
+import router from "../router/Rutas";
+
+const formData = ref({
+  cedula: "",
+  nombre: "",
+  apellido: "",
+  entidad: "",
+  celular: "",
+  eps: "",
+  numero_ficha: "",
+  area: "",
+  motivo_visita: "",
+  dispositivo: "",
+  num_placa_dispositivo: "",
+  serial: "",
+  fecha_ingreso: "",
+  observaciones: "",
+});
+
+// Método para manejar el envío del formulario
+const submitForm = async () => {
+  try {
+    const response = await fetch("http://localhost:3000/api/visitantes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData.value),
+    });
+
+    if (!response.ok) {
+      throw new Error("Error en el envío de datos");
+    }
+
+    const result = await response.json();
+    console.log("Datos guardados con éxito:", result);
+
+    // Resetear el formulario
+    resetForm();
+  } catch (error) {
+    console.error("Error al guardar los datos:", error);
+  }
+};
+
+const resetForm = () => {
+  formData.value = {
+    cedula: "",
+    nombre: "",
+    apellido: "",
+    entidad: "",
+    celular: "",
+    eps: "",
+    numero_ficha: "",
+    area: "",
+    motivo_visita: "",
+    dispositivo: "",
+    num_placa_dispositivo: "",
+    serial: "",
+    fecha_ingreso: "",
+    observaciones: "",
+  };
+};
+
+const checkCedula = async () => {
+  if (formData.value.cedula) {
+    try {
+      const response = await fetch(`http://localhost:3000/api/visitantes/cedula/${formData.value.cedula}`);
+      const visitor = await response.json();
+      if (visitor) {
+        formData.value.nombre = visitor.nombre;
+        formData.value.apellido = visitor.apellido;
+        formData.value.entidad = visitor.entidad;
+        formData.value.celular = visitor.celular;
+        formData.value.eps = visitor.eps;
+        formData.value.area = visitor.area;
+      } else{
+        resetForm();
+      }
+    } catch (error) {
+      console.error("Error al buscar el visitante:", error);
+    }
+  } else {
+    resetForm(); // Resetea el formulario si la cédula está vacía
+  }
+};
+
+const goBack = () => {
+  router.go(-1);
+};
+</script>
+
+<style scoped>
+h1 {
+  display: flex;
+  justify-content: center;
+}
+.container {
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+.form-login {
+  margin-top: 20px;
+}
+.form-group {
+  margin-bottom: 20px;
+}
+.control-label {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+.form-control {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #b2d1f1;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.form-control:focus {
+  border-color: #90b3d8;
+  box-shadow: 0 0 5px rgba(0, 86, 179, 0.5);
+  background-color: #e9f5ff;
+}
+.form-control-observacion {
+  width: 100%;
+  border: 2px solid #81b1e4;
+  border-radius: 8px;
+  padding: 12px;
+  background-color: #f8f9fa;
+  resize: vertical;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.form-control-observacion:focus {
+  border-color: #0056b3;
+  box-shadow: 0 0 5px rgba(0, 86, 179, 0.5);
+  background-color: #e9f5ff;
+}
+.btn {
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
+}
+.btn-outline-dark {
+  border: 2px solid #343a40;
+  color: #343a40;
+  background-color: transparent;
+}
+.btn-outline-dark:hover {
+  background-color: #343a40;
+  color: white;
+}
+.btn-outline-primary {
+  border: 2px solid #007bff;
+  color: #007bff;
+  background-color: transparent;
+}
+.btn-outline-primary:hover {
+  background-color: #007bff;
+  color: white;
+}
+footer p {
+  margin: 0;
+  font-size: 14px;
+}
+</style>

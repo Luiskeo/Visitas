@@ -17,6 +17,7 @@ app.use('/auth', loginRouter);
 app.use('/api', verifyTokenRouter);
 app.use('/api', visitantesRouter); // Usa el nuevo router
 
+
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

@@ -1,32 +1,46 @@
 <template>
   <div>
-    <h1 class="text-center text-black-10">PERSONAL INGRESADO A LA COMPAÑIA</h1>
+    <div class="header">
+      <img src="../../public/logotipo_hR.png" alt="Logo" class="header-logo" />
+      <h1 class="header-title">PERSONAL INGRESADO A LA COMPAÑIA</h1>
+      <button @click="logout" class="header-button">Cerrar sesión</button>
+    </div>
     <nav class="navbar navbar-expand-lg bg-light">
       <div class="container-fluid"></div>
     </nav>
     <div class="container-table">
       <div class="row my-40">
         <div class="col-12">
-          <!-- Aquí van los botones y la barra de búsqueda -->
           <div
             class="nav-bar d-flex justify-content-between align-items-center"
           >
             <div class="d-flex">
-              <a href="/agregar" class="btn btn-outline-success me-2">
-                <i class="bi bi-person-plus-fill"></i> Agregar
-              </a>
-              <a href="/export" class="btn btn-outline-info">
-                <i class="bi bi-download"></i> Exportar
-              </a>
+              <RouterLink
+                :to="{ name: 'agregar' }"
+                class="btn btn-outline-success p-2"
+              >
+                Agregar
+              </RouterLink>
+              <RouterLink
+                :to="{ name: 'exportar' }"
+                class="btn btn-outline-info p-2"
+              >
+                Exportar
+              </RouterLink>
             </div>
-            <form class="d-flex" role="search">
+            <form class="d-flex" @submit.prevent>
               <input
+                v-model="query"
                 class="form-control me-2"
                 type="search"
-                placeholder="Buscar"
+                placeholder="Buscar Visitante"
                 aria-label="Search"
               />
-              <button class="btn btn-outline-success" type="submit">
+              <button
+                class="btn btn-outline-success"
+                type="button"
+                @click="search"
+              >
                 Buscar
               </button>
             </form>
@@ -55,7 +69,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="visitor in visitors" :key="visitor.idvisitante">
+                <tr
+                  v-for="visitor in filteredVisitors"
+                  :key="visitor.idvisitante"
+                >
                   <td>{{ visitor.idvisitante }}</td>
                   <td>{{ visitor.cedula }}</td>
                   <td>{{ visitor.nombre }}</td>
@@ -77,7 +94,7 @@
           </div>
 
           <footer class="bg-primary text-center text-black d-inline">
-            <p>Copyright © C&C SERVICES 2022 All rights reserved.</p>
+            <p>Copyright © C&C SERVICES 2024 All rights reserved.</p>
           </footer>
         </div>
       </div>
@@ -87,19 +104,25 @@
 
 <script setup lang="js">
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
 
+const toast = useToast();
 const router = useRouter();
 const token = ref('');
 const visitors = ref([]);
+const query = ref('');
+const filteredVisitors = ref([]);
 
+// Función para obtener los datos del usuario
 const fetchUserData = async () => {
   token.value = localStorage.getItem('token') || '';
   if (!token.value) {
     router.push({ name: 'login' });
+    toast.error('Debe iniciar sesión');
   }
 };
-
+// Función para obtener los visitantes
 const fetchVisitors = async () => {
   try {
     const response = await fetch('http://localhost:3000/api/visitantes');
@@ -107,6 +130,7 @@ const fetchVisitors = async () => {
     const data = await response.json();
     if (Array.isArray(data)) {
       visitors.value = data;
+      filteredVisitors.value = data; // Inicializa lo
     } else {
       console.error('Los datos no son un array:', data);
     }
@@ -115,12 +139,30 @@ const fetchVisitors = async () => {
   }
 };
 
+// Método de búsqueda
+const search = async () => {
+  try {
+    const response = await fetch(`http://localhost:3000/api/visitantes/search?query=${encodeURIComponent(query.value)}`);
+    if (!response.ok) throw new Error('Error en la búsqueda');
+    const data = await response.json();
+    if (Array.isArray(data)) {
+      filteredVisitors.value = data;
+    } else {
+      console.error('Los datos no son un array:', data);
+    }
+  } catch (error) {
+    console.error('Error en search:', error);
+  }
+};
+
+// Función de logout
 const logout = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('nombre');
-  router.push({ name: 'login' }); // Redirigir al usuario a la página de inicio de sesión
+  router.push({ name: 'login' });
 };
 
+// Cargar datos al montar el componente
 onMounted(() => {
   fetchUserData();
   fetchVisitors();
@@ -135,6 +177,41 @@ onMounted(() => {
   font-family: sans-serif;
 }
 
+.header {
+  display: flex;
+  align-items: center; /* Centra verticalmente */
+  justify-content: space-between; /* Espaciado entre los elementos */
+  padding: 20px;
+  background-color: #f8f9fa; /* Color de fondo */
+  border-bottom: 2px solid #007bff; /* Línea inferior */
+}
+
+.header-logo {
+  width: 200px; 
+  height: auto; 
+}
+
+.header-title {
+  flex: 1; /* Permite que el título tome el espacio disponible */
+  text-align: center; /* Centra el texto horizontalmente */
+  margin: 0; /* Elimina margen por defecto */
+  color: #343a40; /* Color del texto */
+}
+
+.header-button {
+  background-color: #007bff; /* Color de fondo del botón */
+  color: white; /* Color del texto del botón */
+  border: none; /* Sin borde */
+  padding: 10px 15px; /* Relleno */
+  border-radius: 5px; /* Bordes redondeados */
+  cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+  transition: background-color 0.3s; /* Efecto de transición */
+}
+
+.header-button:hover {
+  background-color: #0056b3; /* Color al pasar el ratón */
+}
+
 hr {
   border: 2px solid #017bab;
 }
@@ -145,7 +222,9 @@ h1 {
   border-radius: 50%;
   margin: 0;
   border: 2px solid #fff;
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
   position: relative;
   top: 10px;
   font-size: xx-large;
@@ -208,7 +287,7 @@ h1 {
 
 .container-table {
   width: 100%;
-  border: 2px solid #017bab;
+  border: 2px solid #0278a7;
   padding: 1em;
   margin-bottom: 15px;
   background: #fffafa;
@@ -261,7 +340,7 @@ h1 {
 }
 
 .btn-secondary {
-  background-color: #6c757d;
+  background-color: #5782a7;
   border: none;
   transition: background-color 0.3s;
 }
@@ -282,12 +361,29 @@ h1 {
 }
 
 .btn-outline-success {
+  border-radius: 15px;
   border: 2px solid #28a745;
+  background: #23ad58;
+  color: #fff;
   transition: background-color 0.3s, color 0.3s;
 }
 
 .btn-outline-success:hover {
-  background-color: #28a745;
+  background-color: #14441f;
   color: white;
 }
+
+.btn-outline-info {
+  border-radius: 15px;
+  border: 2px solid #288ea7;
+  background: #2386ad;
+  color: #fff;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-outline-info:hover {
+  background-color: #141744;
+  color: white;
+}
+
 </style>

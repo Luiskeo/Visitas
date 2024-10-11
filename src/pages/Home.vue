@@ -1,6 +1,5 @@
 <template>
   <div>
-    <button @click="logout" class="logout-button">Cerrar Sesión</button>
     <Dashboard />
   </div>
 </template>
@@ -11,11 +10,7 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-const logout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('nombre') 
-  router.push({ name: 'login' }); // Redirigir al usuario a la página de inicio de sesión
-};
+
 </script>
 
 <style scoped>

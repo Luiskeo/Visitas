@@ -1,5 +1,5 @@
 <template>
-  <div class="login-containe">
+  <div class="login-container">
     <form class="login-form" @submit.prevent="submit">
       <div class="inner__brand">
       <div class="brand__text">
@@ -39,15 +39,14 @@
 <script lang="ts" setup>
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { useToast } from 'vue-toastification'
+import { useToast } from 'vue-toastification';
 
 const formData = reactive({
   usuario: '',
   clave: '',
 })
-
-const router = useRouter()
 const toast = useToast()
+const router = useRouter()
 
 const submit = async () => {
   try {
@@ -65,14 +64,13 @@ const submit = async () => {
       localStorage.setItem('token', data.token)
       localStorage.setItem('nombre', data.usuario)
       console.log(`Biengenido ${data.usuario}`)
-      toast.success(`Bienvenido ${data.usuario}`)
       await router.push({ name: 'home' })
     } else {
       toast.error(data.message)
+      console.error('Error al iniciar sesión:', data.message)
     }
   } catch (error) {
     console.error('Error al iniciar sesión:', error)
-    toast.error('Error interno del servidor')
   }
 }
 </script>
@@ -81,7 +79,7 @@ const submit = async () => {
 <style >
 
 .login-container {
-    background-color: #092431; /* Color de fondo deseado */
+    background-color: #1f4d64; /* Color de fondo deseado */
     height: 100vh; /* Asegúrate de que ocupe toda la altura de la ventana */
     display: flex; /* Para centrar el contenido */
     justify-content: center; /* Centrar horizontalmente */
