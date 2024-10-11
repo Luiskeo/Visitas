@@ -7,6 +7,7 @@ const router = express.Router();
 router.get('/visitantes', async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM visitante');
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.json(rows);
   } catch (error) {
     console.error(error);

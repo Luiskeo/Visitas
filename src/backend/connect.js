@@ -6,6 +6,7 @@ const pool = createPool({
   password: '',
   database: 'visitas',
   waitForConnections: true,
+  charset: 'utf8mb4',
   connectionLimit: 10, // Número máximo de conexiones en el pool
   queueLimit: 0
 })

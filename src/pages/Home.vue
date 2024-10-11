@@ -7,10 +7,9 @@
 
 <script setup lang="ts">
 import Dashboard from '../components/Dashboard.vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const route = useRoute();
 
 const logout = () => {
   localStorage.removeItem('token');
