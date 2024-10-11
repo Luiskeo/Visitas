@@ -6,7 +6,8 @@
     </nav>
     <div class="container-table">
       <div class="row my-40">
-        <div class="col-20">
+        <div class="col-12">
+          <!-- Aquí van los botones y la barra de búsqueda -->
           <div
             class="nav-bar d-flex justify-content-between align-items-center"
           >
@@ -33,7 +34,6 @@
 
           <br />
           <div class="table-responsive">
-            <!-- Contenedor para el scrollbar -->
             <table class="table table-striped table-hover table-bordered">
               <thead>
                 <tr>
@@ -207,7 +207,7 @@ h1 {
 }
 
 .container-table {
-  width: 122%;
+  width: 100%;
   border: 2px solid #017bab;
   padding: 1em;
   margin-bottom: 15px;
@@ -215,16 +215,19 @@ h1 {
   font-size: 12px;
   font-weight: bold;
   color: rgba(12, 2, 2, 0.747);
-  text-align: justify; /* Cambiado a justify para justificar el texto */
+  text-align: justify;
 }
 
 .table-responsive {
-  max-height: 550px; /* Altura específica para el contenedor */
-  overflow: auto; /* Para permitir el desplazamiento tanto horizontal como vertical */
+  max-width: 100%; /* Limita el ancho del contenedor */
+  max-height: 550px; /* Altura máxima para el desplazamiento vertical */
+  overflow-x: auto; /* Permite el desplazamiento horizontal */
+  overflow-y: auto; /* Permite el desplazamiento vertical */
 }
 
 .table {
   width: 100%;
+  table-layout: auto; /* Permite que las columnas se ajusten automáticamente */
   border-collapse: collapse; /* Para que no haya espacios entre celdas */
 }
 
