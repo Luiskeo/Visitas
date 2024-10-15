@@ -1,5 +1,6 @@
 import express from 'express';
 import pool from '../connect.js'; // Ajusta la ruta según la ubicación de tu conexión
+import { exportToExcel } from '../services/export.js';
 
 const router = express.Router();
 
@@ -68,6 +69,17 @@ router.get('/visitantes/cedula/:cedula', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send('Error en la consulta');
+  }
+});
+
+router.get("/visitantes/download", async (req, res) => {
+  try {
+      const buffer = await exportToExcel();  // Llama a la función que genera el Excel
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.setHeader('Content-Disposition', 'attachment; filename="Reporte_Visitas.xlsx"');
+      res.send(buffer);  // Enviar el archivo al cliente
+  } catch (error) {
+      res.status(500).send('Error en la exportación: ' + error.message);
   }
 });
 

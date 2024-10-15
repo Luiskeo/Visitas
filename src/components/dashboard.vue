@@ -11,22 +11,16 @@
     <div class="container-table">
       <div class="row my-40">
         <div class="col-12">
-          <div
-            class="nav-bar d-flex justify-content-between align-items-center"
-          >
+          <div class="nav-bar d-flex justify-content-between align-items-center">
             <div class="d-flex">
-              <RouterLink
-                :to="{ name: 'agregar' }"
-                class="btn btn-outline-success p-2"
-              >
+              <RouterLink :to="{ name: 'agregar' }" class="btn btn-outline-success p-2">
                 Agregar
               </RouterLink>
-              <RouterLink
-                :to="{ name: 'exportar' }"
-                class="btn btn-outline-info p-2"
-              >
-                Exportar
-              </RouterLink>
+              <div>
+                <button class="btn btn-outline-info p-2" @click="downloadReport">
+                  Descargar Reporte
+                </button>
+              </div>
             </div>
             <form class="d-flex" @submit.prevent>
               <input
@@ -36,11 +30,7 @@
                 placeholder="Buscar Visitante"
                 aria-label="Search"
               />
-              <button
-                class="btn btn-outline-success"
-                type="button"
-                @click="search"
-              >
+              <button class="btn btn-outline-success" type="button" @click="search">
                 Buscar
               </button>
             </form>
@@ -69,10 +59,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr
-                  v-for="visitor in filteredVisitors"
-                  :key="visitor.idvisitante"
-                >
+                <tr v-for="visitor in filteredVisitors" :key="visitor.idvisitante">
                   <td>{{ visitor.idvisitante }}</td>
                   <td>{{ visitor.cedula }}</td>
                   <td>{{ visitor.nombre }}</td>
@@ -122,6 +109,7 @@ const fetchUserData = async () => {
     toast.error('Debe iniciar sesión');
   }
 };
+
 // Función para obtener los visitantes
 const fetchVisitors = async () => {
   try {
@@ -139,10 +127,24 @@ const fetchVisitors = async () => {
   }
 };
 
+// Función para descargar el reporte en CSV
+const downloadReport = async () => {
+  const response = await fetch ('http://localhost:3000/api/visitantes/download')
+  if (!response.ok) throw new Error('Error al descargar el reporte');
+  const data = await response.blob();
+  const url = URL.createObjectURL(data);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'REPORTE_VISITAS_C&C.xlsx';
+  link.click();
+  URL.revokeObjectURL(url);
+  console.log('Reporte descargado');
+};
+
 // Método de búsqueda
 const search = async () => {
   try {
-    const response = await fetch(`http://localhost:3000/api/visitantes/search?query=${encodeURIComponent(query.value)}`);
+    const response = await fetch('http://localhost:3000/api/visitantes/search?query=${encodeURIComponent(query.value)}');
     if (!response.ok) throw new Error('Error en la búsqueda');
     const data = await response.json();
     if (Array.isArray(data)) {
@@ -167,199 +169,55 @@ onMounted(() => {
   fetchUserData();
   fetchVisitors();
 });
+
+
 </script>
 
 <style scoped>
+/* General */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: sans-serif;
+  font-family: Arial, sans-serif;
 }
 
 .header {
   display: flex;
-  align-items: center; /* Centra verticalmente */
-  justify-content: space-between; /* Espaciado entre los elementos */
+  align-items: center;
+  justify-content: space-between;
   padding: 20px;
-  background-color: #f8f9fa; /* Color de fondo */
-  border-bottom: 2px solid #007bff; /* Línea inferior */
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #007bff;
 }
 
 .header-logo {
-  width: 200px; 
-  height: auto; 
+  width: 150px;
+  height: auto;
 }
 
 .header-title {
-  flex: 1; /* Permite que el título tome el espacio disponible */
-  text-align: center; /* Centra el texto horizontalmente */
-  margin: 0; /* Elimina margen por defecto */
-  color: #343a40; /* Color del texto */
+  flex: 1;
+  text-align: center;
+  margin: 0;
+  color: #343a40;
 }
 
 .header-button {
-  background-color: #007bff; /* Color de fondo del botón */
-  color: white; /* Color del texto del botón */
-  border: none; /* Sin borde */
-  padding: 10px 15px; /* Relleno */
-  border-radius: 5px; /* Bordes redondeados */
-  cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
-  transition: background-color 0.3s; /* Efecto de transición */
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .header-button:hover {
-  background-color: #0056b3; /* Color al pasar el ratón */
-}
-
-hr {
-  border: 2px solid #017bab;
-}
-
-h1 {
-  width: 850px;
-  height: 85px;
-  border-radius: 50%;
-  margin: 0;
-  border: 2px solid #fff;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  position: relative;
-  top: 10px;
-  font-size: xx-large;
-}
-
-.container_img {
-  width: 250px;
-  height: 85px;
-  border-radius: 50%;
-  margin: 3%;
-  border: 2px solid #fff;
-  display: inline-block;
-  position: relative;
-  top: -30px;
-  right: 3vh;
-}
-
-.container_imgclaro {
-  width: 150px;
-  height: 10px;
-  border-radius: 50%;
-  margin: 3%;
-  border: 2px solid #fff;
-  display: inline-table;
-  position: relative;
-  top: -30px;
-  left: 130vh;
-}
-
-.form-login {
-  width: 1000px;
-  height: auto; /* Cambiado a auto para adaptarse al contenido */
-  background: #f6f7f8;
-  margin: auto;
-  margin-top: 2px;
-  box-shadow: 7px 13px 37px rgb(0, 0, 0);
-  padding: 20px 30px;
-}
-
-.form-control,
-.form-select,
-.form-control-observacion {
-  width: 100%;
-  border: 2px solid #017bab;
-  margin-bottom: 15px;
-  padding: 11px;
-  background: #99999980;
-  font-size: 14px;
-  font-weight: bold;
-  color: rgba(12, 2, 2, 0.747);
-  text-align: center;
-}
-
-.form-login label {
-  text-align: center;
-  width: 100%;
-  font-size: 15px;
-  color: rgba(12, 2, 2, 0.726);
-}
-
-.container-table {
-  width: 100%;
-  border: 2px solid #0278a7;
-  padding: 1em;
-  margin-bottom: 15px;
-  background: #fffafa;
-  font-size: 12px;
-  font-weight: bold;
-  color: rgba(12, 2, 2, 0.747);
-  text-align: justify;
-}
-
-.table-responsive {
-  max-width: 100%; /* Limita el ancho del contenedor */
-  max-height: 550px; /* Altura máxima para el desplazamiento vertical */
-  overflow-x: auto; /* Permite el desplazamiento horizontal */
-  overflow-y: auto; /* Permite el desplazamiento vertical */
-}
-
-.table {
-  width: 100%;
-  table-layout: auto; /* Permite que las columnas se ajusten automáticamente */
-  border-collapse: collapse; /* Para que no haya espacios entre celdas */
-}
-
-.table th,
-.table td {
-  border: 2px solid #a7b4b9; /* Borde para filas y columnas */
-  padding: 10px;
-  text-align: justify; /* Justifica el texto en las celdas */
-}
-
-.table th {
-  position: sticky; /* Fijar la cabecera */
-  top: 0; /* Para que se quede en la parte superior */
-  background-color: #7a96b3; /* Color de fondo para la cabecera */
-  z-index: 10; /* Asegura que esté por encima de otras filas */
-}
-
-.navbar {
-  background-color: #f8f9fa;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.btn-primary {
-  background-color: #007bff;
-  border: none;
-  transition: background-color 0.3s;
-}
-
-.btn-primary:hover {
   background-color: #0056b3;
 }
 
-.btn-secondary {
-  background-color: #5782a7;
-  border: none;
-  transition: background-color 0.3s;
-}
-
-.btn-secondary:hover {
-  background-color: #5a6268;
-}
-
-.form-control {
-  margin: 0 auto;
-  border-radius: 20px;
-  transition: border-color 0.3s;
-}
-
-.form-control:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
+/* Botones */
 .btn-outline-success {
   border-radius: 15px;
   border: 2px solid #28a745;
@@ -373,17 +231,73 @@ h1 {
   color: white;
 }
 
+
 .btn-outline-info {
   border-radius: 15px;
-  border: 2px solid #288ea7;
+  border: 2px solid #2874a7;
   background: #2386ad;
   color: #fff;
   transition: background-color 0.3s, color 0.3s;
 }
 
 .btn-outline-info:hover {
-  background-color: #141744;
+  background-color: #0cc5f3;
   color: white;
+}
+
+
+/* Tabla */
+.table-responsive {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.table th {
+  position: sticky;
+  color: white;
+}
+
+.table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #4c6a8a;
+  box-shadow: 0 2px 2px rgba(243, 240, 240, 0.1); /* Añadir una sombra para mayor claridad */
+}
+
+
+.table td, .table th {
+  padding: 0px;
+  border: 1px solid #dee2e6;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.table-responsive {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+
+/* Formulario de búsqueda */
+.form-control {
+  border-radius: 20px;
+  border: 1px solid #007bff;
+  transition: box-shadow 0.3s, border-color 0.3s;
+}
+
+.form-control:focus {
+  border-color: #90b3d8;
+  box-shadow: 0 0 5px rgba(0, 86, 179, 0.5);
+  background-color: #e9f5ff;
+}
+
+.form-control.me-2{
+  text-align: center;
+  background: rgb(219, 218, 218);
+  
 }
 
 </style>
