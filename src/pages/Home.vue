@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import Dashboard from '../components/Dashboard.vue';
+import Dashboard from '../components/dashboard.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();

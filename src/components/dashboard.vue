@@ -113,7 +113,7 @@ const fetchUserData = async () => {
 // Función para obtener los visitantes
 const fetchVisitors = async () => {
   try {
-    const response = await fetch('http://localhost:3000/api/visitantes');
+    const response = await fetch('http://172.16.0.115:3000/api/visitantes');
     if (!response.ok) throw new Error('Error al obtener los datos');
     const data = await response.json();
     if (Array.isArray(data)) {
@@ -129,7 +129,7 @@ const fetchVisitors = async () => {
 
 // Función para descargar el reporte en CSV
 const downloadReport = async () => {
-  const response = await fetch ('http://localhost:3000/api/visitantes/download')
+  const response = await fetch ('http://172.16.0.115:3000/api/visitantes/download')
   if (!response.ok) throw new Error('Error al descargar el reporte');
   const data = await response.blob();
   const url = URL.createObjectURL(data);
@@ -144,7 +144,7 @@ const downloadReport = async () => {
 // Método de búsqueda
 const search = async () => {
   try {
-    const response = await fetch('http://localhost:3000/api/visitantes/search?query=${encodeURIComponent(query.value)}');
+    const response = await fetch('http://172.16.0.115:3000/api/visitantes/search?query=${encodeURIComponent(query.value)}');
     if (!response.ok) throw new Error('Error en la búsqueda');
     const data = await response.json();
     if (Array.isArray(data)) {
@@ -180,6 +180,7 @@ onMounted(() => {
   padding: 0;
   box-sizing: border-box;
   font-family: Arial, sans-serif;
+  text-align:center;
 }
 
 .header {

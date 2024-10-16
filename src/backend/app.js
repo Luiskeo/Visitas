@@ -19,5 +19,5 @@ app.use('/api', visitantesRouter); // Usa el nuevo router
 
 
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`Servidor corriendo en http://172.16.0.115:${PORT}`);
 });

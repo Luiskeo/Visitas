@@ -1,32 +1,35 @@
 <template>
   <div class="login-container">
-    <form class="login-form" @submit.prevent="submit">
-      <div class="inner__brand">
-      <div class="brand__text">
-        <span>
-          <h3>C&C Services</h3>
-        </span>
-      </div>
+    <div class="video-container">
+      <video autoplay muted id="video-background">
+        <source
+          src="../../public/videos/Rosado Amarillo Neón Estilo ilustración 3D Capacitación Emprendimiento Video(1).mp4"
+          type="video/mp4"
+        />
+        Tu navegador no soporta el elemento de video.
+      </video>
     </div>
-      <h1 class="font-semibold text-4xl mb-4">Iniciar Sesion</h1>
+    <form class="login-form" @submit.prevent="submit">
+      <div class="inner__brand"></div>
+      <h1 class="font-semibold text-4xl mb-4">Iniciar Sesión</h1>
       <div class="mb-4">
         <label for="usuario" class="label">Usuario</label>
-        <input 
-          id="usuario" 
-          type="text" 
-          v-model="formData.usuario" 
-          required 
-          class="input" 
+        <input
+          id="usuario"
+          type="text"
+          v-model="formData.usuario"
+          required
+          class="input"
         />
       </div>
       <div class="mb-4">
         <label for="clave" class="label">Contraseña</label>
-        <input 
-          id="clave" 
-          type="password" 
-          v-model="formData.clave" 
-          required 
-          class="input" 
+        <input
+          id="clave"
+          type="password"
+          v-model="formData.clave"
+          required
+          class="input"
         />
       </div>
       <div class="flex justify-center mt-4">
@@ -37,102 +40,191 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
-import { useToast } from 'vue-toastification';
+import { reactive, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { useToast } from "vue-toastification";
 
 const formData = reactive({
-  usuario: '',
-  clave: '',
-})
-const toast = useToast()
-const router = useRouter()
+  usuario: "",
+  clave: "",
+});
+const toast = useToast();
+const router = useRouter();
+
+// Usa el hook onMounted para asegurarte de que el DOM está cargado antes de interactuar con el video
+onMounted(() => {
+  const video = document.getElementById("video-background") as HTMLVideoElement; // Asegúrate de que el video es un elemento
+  if (video) {
+    video.addEventListener("ended", function () {
+      video.pause(); // Pausa el video una vez que termina
+    });
+  }
+});
 
 const submit = async () => {
   try {
-    const response = await fetch('http://localhost:3000/auth/login', {
-      method: 'POST',
+    const response = await fetch("http://172.16.0.115:3000/auth/login", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
-    })
-
-    const data = await response.json()
-
+    });
+    const data = await response.json();
     if (response.ok) {
-      localStorage.setItem('token', data.token)
-      localStorage.setItem('nombre', data.usuario)
-      console.log(`Biengenido ${data.usuario}`)
-      await router.push({ name: 'home' })
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("nombre", data.nombre);
+      console.log(`Bienvenido ${data.nombre}`);
+      await router.push({ name: "home" });
     } else {
-      toast.error(data.message)
-      console.error('Error al iniciar sesión:', data.message)
+      toast.error(data.message);
+      console.error("Error al iniciar sesión:", data.message);
     }
   } catch (error) {
-    console.error('Error al iniciar sesión:', error)
+    console.error("Error al iniciar sesión:", error);
   }
-}
+};
 </script>
 
-
-<style >
-
-.login-container {
-    background-color: #1f4d64; /* Color de fondo deseado */
-    height: 100vh; /* Asegúrate de que ocupe toda la altura de la ventana */
-    display: flex; /* Para centrar el contenido */
-    justify-content: center; /* Centrar horizontalmente */
-    align-items: center; /* Centrar verticalmente */
+<style>
+/* contenido responsivo */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.brand__text h3 {
-  font-size: 2.5rem;
-  color: #4A90E2; /* Color del texto */
+/* Estilos generales */
+html,
+body {
+  height: 100%;
+  margin: 0;
 }
 
-.login-form {
-  max-width: 400px; /* Ancho máximo del formulario */
-  margin: auto; /* Centramos el formulario */
+/* Video de fondo */
+#video-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+.video-container {
+  position: relative;
+  z-index: 1;
+  color: white;
+  text-align: center;
   padding: 20px;
-  border: 1px solid #E0E0E0; /* Bordes del formulario */
-  border-radius: 8px; /* Bordes redondeados */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra */
-  background-color: #FFFFFF; /* Fondo blanco */
 }
 
+/* Contenedor principal de login */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  position: relative;
+}
+
+/* Formulario de login */
+.login-form {
+  position: absolute;
+  top: 40vh;
+  right: 12vw;
+  z-index: 1;
+  max-width: 400px;
+  width: 90%;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  text-align: center;
+}
+
+/* Ajustes de campos de formulario */
 .label {
-  display: block; /* Ocupa todo el ancho */
-  margin-bottom: 8px; /* Espacio debajo de la etiqueta */
-  font-weight: bold; /* Negrita */
-  color: #333; /* Color de texto */
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
 }
 
 .input {
-  width: 90%; /* Ancho completo */
-  padding: 10px; /* Espaciado interno */
-  margin-bottom: 16px; /* Espacio entre inputs */
-  border: 1px solid #D0D0D0; /* Bordes de los inputs */
-  border-radius: 4px; /* Bordes redondeados */
-  font-size: 1rem; /* Tamaño de fuente */
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  font-size: 1rem;
 }
 
 .input:focus {
-  border-color: #4A90E2; /* Color del borde al enfocar */
-  outline: none; /* Sin contorno */
+  border-color: #4a90e2;
+  outline: none;
 }
 
+/* Botón de iniciar sesión */
 .button {
-  padding: 10px 20px; /* Espaciado interno del botón */
-  background-color: #4A90E2; /* Color de fondo del botón */
-  color: white; /* Color del texto */
-  border: none; /* Sin bordes */
-  border-radius: 4px; /* Bordes redondeados */
-  cursor: pointer; /* Cambia el cursor al pasar */
-  transition: background-color 0.3s; /* Transición suave */
+  padding: 10px 20px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 100%;
 }
 
 .button:hover {
-  background-color: #357ABD; /* Color de fondo al pasar */
+  background-color: #357abd;
+}
+
+/* Ajustes para pantallas más pequeñas */
+@media (max-width: 768px) {
+  .login-form {
+    top: 30vh;
+    right: 4vw;
+    max-width: 350px;
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .input {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  .button {
+    padding: 8px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-form {
+    top: 25vh;
+    right: 2vw;
+    max-width: 300px;
+  }
+
+  h1 {
+    font-size: 1.25rem;
+  }
+
+  .input {
+    padding: 6px;
+    font-size: 0.85rem;
+  }
+
+  .button {
+    padding: 6px 12px;
+  }
 }
 </style>

@@ -14,6 +14,7 @@
             type="number"
             class="form-control"
             id="cedula"
+            required
             placeholder="Digite el número de documento"
             @input="checkCedula"
           />
@@ -25,6 +26,7 @@
             type="text"
             class="form-control"
             id="nombre"
+            required
             placeholder="Digite el nombre"
           />
         </div>
@@ -33,6 +35,7 @@
           <input
             v-model="formData.apellido"
             type="text"
+            required
             class="form-control"
             id="apellido"
             placeholder="Digite el apellido"
@@ -77,6 +80,7 @@
             type="text"
             class="form-control"
             id="numero_ficha"
+            required
             placeholder="Digite el número de ficha"
           />
         </div>
@@ -87,6 +91,7 @@
             type="text"
             class="form-control"
             id="area"
+            required
             placeholder="Digite el área que va a visitar"
           />
         </div>
@@ -99,6 +104,7 @@
             type="text"
             class="form-control"
             id="motivo_visita"
+            required
             placeholder="Digite el motivo de la visita"
           />
         </div>
@@ -120,7 +126,7 @@
           >
           <input
             v-model="formData.num_placa_dispositivo"
-            type="text"
+            type="number"
             class="form-control"
             id="num_placa_dispositivo"
             placeholder="Digite el número de placa de dispositivo"
@@ -130,7 +136,7 @@
           <label for="serial" class="control-label">NÚMERO DE SERIAL</label>
           <input
             v-model="formData.serial"
-            type="text"
+            type="number"
             class="form-control"
             id="serial"
             placeholder="Digite el serial"
@@ -145,6 +151,7 @@
             type="datetime-local"
             class="form-control"
             id="fecha_ingreso"
+            required
           />
         </div>
         <div class="col-md-4 form-group">
@@ -199,21 +206,18 @@ const formData = ref({
 // Método para manejar el envío del formulario
 const submitForm = async () => {
   try {
-    const response = await fetch("http://localhost:3000/api/visitantes", {
+    const response = await fetch("http://172.16.0.115:3000/api/visitantes", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formData.value),
     });
-
     if (!response.ok) {
       throw new Error("Error en el envío de datos");
     }
-
     const result = await response.json();
     console.log("Datos guardados con éxito:", result);
-
     // Resetear el formulario
     resetForm();
   } catch (error) {
@@ -267,20 +271,35 @@ const goBack = () => {
   router.go(-1);
 };
 </script>
-
 <style scoped>
-h1 {
+
+/* contenido responsivo */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilos generales */
+html, body {
   display: flex;
   justify-content: center;
+  align-items: center; /* Centrar también verticalmente */
+  height: 100%;
+  margin: 0;
 }
+
 .container {
   max-width: 1200px;
-  margin: 50px auto;
-  padding: 30px;
-  background-color: #ffffff;
+  width: 100%; /* Para hacer que ocupe el ancho completo en pantallas pequeñas */
+  padding: 20px; /* Agrega padding para que tenga espacio interno en pantallas pequeñas */
+  background-color: #d8d9da;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  margin: auto; /* Centrará el contenedor horizontalmente */
 }
+
+/* Formulario de login */
 .form-login {
   margin-top: 20px;
 }
@@ -295,9 +314,9 @@ h1 {
 .form-control {
   width: 100%;
   padding: 12px;
-  border: 2px solid #b2d1f1;
+  border: 2px solid #afbdca;
   border-radius: 8px;
-  background-color: #f8f9fa;
+  background-color: #f8fafa;
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 .form-control:focus {
@@ -307,7 +326,7 @@ h1 {
 }
 .form-control-observacion {
   width: 100%;
-  border: 2px solid #81b1e4;
+  border: 2px solid #aac7e5;
   border-radius: 8px;
   padding: 12px;
   background-color: #f8f9fa;
@@ -347,4 +366,28 @@ footer p {
   margin: 0;
   font-size: 14px;
 }
+
+/* Eliminar el padding */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Media Queries para hacerlo más responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+    max-width: 90%; /* Ocupará el 90% del ancho de la pantalla */
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 10px;
+    max-width: 100%; /* Ocupará el ancho completo en pantallas muy pequeñas */
+  }
+}
+
 </style>
+
