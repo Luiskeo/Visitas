@@ -244,10 +244,13 @@ const resetForm = () => {
   };
 };
 
+
+
+//Funcion para autocompletar agregando por cedula
 const checkCedula = async () => {
   if (formData.value.cedula) {
     try {
-      const response = await fetch(`http://localhost:3000/api/visitantes/cedula/${formData.value.cedula}`);
+      const response = await fetch(`http://172.16.0.115:3000/api/visitantes/cedula/${formData.value.cedula}`);
       const visitor = await response.json();
       if (visitor) {
         formData.value.nombre = visitor.nombre;

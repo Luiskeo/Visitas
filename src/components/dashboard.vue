@@ -144,7 +144,7 @@ const downloadReport = async () => {
 // Método de búsqueda
 const search = async () => {
   try {
-    const response = await fetch('http://172.16.0.115:3000/api/visitantes/search?query=${encodeURIComponent(query.value)}');
+    const response = await fetch(`http://172.16.0.115:3000/api/visitantes/search?query=${encodeURIComponent(query.value)}`);
     if (!response.ok) throw new Error('Error en la búsqueda');
     const data = await response.json();
     if (Array.isArray(data)) {
