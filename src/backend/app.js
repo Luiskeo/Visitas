@@ -4,7 +4,10 @@ import cors from 'cors';
 import loginRouter from './Routes/login.js';
 import verifyTokenRouter from './Controllers/verifyToken.js';
 import visitantesRouter from './Routes/visitantes.js'; // Importa el nuevo router
+import dotenv from 'dotenv';
 
+
+dotenv.config();
 const app = express();
 const PORT = 3000;
 

@@ -3,8 +3,6 @@ import Login from '../pages/Login.vue';
 import home from '../pages/Home.vue';
 import agregar from '../pages/Agregar.vue';
 import dashboard from '../components/dashboard.vue'
-import Exportar from '../pages/Exportar.vue';
-
 
 const routes = [
   {
@@ -31,12 +29,7 @@ const routes = [
     path: '/agregar',
     name: 'agregar',
     component: agregar,
-  },
-  {
-    path: '/exportar',
-    name: 'exportar',
-    component: Exportar,
-  },
+  }
 ];
 
 const router = createRouter({

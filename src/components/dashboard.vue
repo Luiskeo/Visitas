@@ -11,7 +11,7 @@
     <div class="container-table">
       <div class="row my-40">
         <div class="col-12">
-          <div class="nav-bar d-flex justify-content-between align-items-center">
+          <div class="nav-bar">
             <div class="d-flex">
               <RouterLink :to="{ name: 'agregar' }" class="btn btn-outline-success p-2">
                 Agregar
@@ -35,8 +35,6 @@
               </button>
             </form>
           </div>
-
-          <br />
           <div class="table-responsive">
             <table class="table table-striped table-hover table-bordered">
               <thead>
@@ -130,7 +128,10 @@ const fetchVisitors = async () => {
 // Función para descargar el reporte en CSV
 const downloadReport = async () => {
   const response = await fetch ('http://172.16.0.115:3000/api/visitantes/download')
-  if (!response.ok) throw new Error('Error al descargar el reporte');
+  if (!response.ok) {
+    toast.error('Error interno del servidor al descargar reporte')
+    throw new Error('Error al descargar el reporte')
+  }
   const data = await response.blob();
   const url = URL.createObjectURL(data);
   const link = document.createElement('a');
@@ -138,6 +139,7 @@ const downloadReport = async () => {
   link.download = 'REPORTE_VISITAS_C&C.xlsx';
   link.click();
   URL.revokeObjectURL(url);
+  toast.success(`${link.download} descargado con exito`);
   console.log('Reporte descargado');
 };
 
@@ -179,7 +181,7 @@ onMounted(() => {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
+  font-family: 'Montserrat', sans-serif !important;
   text-align:center;
 }
 
@@ -217,6 +219,17 @@ onMounted(() => {
 .header-button:hover {
   background-color: #0056b3;
 }
+
+
+/* Nav-bar */
+
+.nav-bar{
+  display: flex;
+  height: 55px;
+  justify-content: space-between;
+  align-items: center;
+}
+
 
 /* Botones */
 .btn-outline-success {
@@ -263,7 +276,7 @@ onMounted(() => {
   top: 0;
   z-index: 100;
   background-color: #4c6a8a;
-  box-shadow: 0 2px 2px rgba(243, 240, 240, 0.1); /* Añadir una sombra para mayor claridad */
+  box-shadow: 0 2px 2px rgba(243, 240, 240, 0.1); 
 }
 
 

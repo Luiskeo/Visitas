@@ -16,8 +16,7 @@ loginRouter.post('/login', async (req, res) => {
     if (rows.length === 1) {
       const { nombre, usuario: dbUsuario, clave: dbClave } = rows[0];
 
-      // Aquí deberías verificar la clave hasheada con bcrypt
-      if (dbClave === clave) { // Para producción, usa bcrypt para comparar hashes
+      if (dbClave === clave) { 
         const token = generateToken({ usuario: dbUsuario });
         return res.json({
           message: 'Inicio de sesión exitoso',
@@ -27,7 +26,7 @@ loginRouter.post('/login', async (req, res) => {
         });
       }
     } else{
-      return res.status(401).json({ message: 'Usuario o contraseña incorrectos' });
+      return res.status(401).json({ message: 'Datos incorrectos' });
     }
   } catch (error) {
     console.error('Error al consultar la base de datos:', error);

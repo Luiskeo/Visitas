@@ -11,6 +11,6 @@
 
 <style>
 body {
-  font-family: 'Roboto', sans-serif; /* Asegúrate de que el nombre sea correcto */
+  font-family: 'Montserrat', sans-serif !important; /* Asegúrate de que el nombre sea correcto */
 }
 </style>

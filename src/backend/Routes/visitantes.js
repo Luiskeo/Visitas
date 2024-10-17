@@ -4,7 +4,7 @@ import { exportToExcel } from '../services/export.js';
 
 const router = express.Router();
 
-// Ruta para obtener todos los visitantes
+//Obtener todos los visitantes
 router.get('/visitantes', async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM visitante');
@@ -15,7 +15,7 @@ router.get('/visitantes', async (req, res) => {
     res.status(500).send('Error en la consulta');
   }
 });
-
+//Ingresar visitante
 router.post('/visitantes', async (req, res) => {
   const { cedula, nombre, apellido, entidad, celular, eps, numero_ficha, area, motivo_visita, dispositivo, num_placa_dispositivo, serial, fecha_ingreso, observaciones } = req.body; 
   try {
@@ -31,7 +31,7 @@ router.post('/visitantes', async (req, res) => {
   }
 })
 
-// Ruta para buscar visitantes por nombre o cédula
+//Buscar visitantes por nombre o cédula
 router.get('/visitantes/search', async (req, res) => {
   const query = req.query.query
 
@@ -51,6 +51,7 @@ router.get('/visitantes/search', async (req, res) => {
   }
 });
 
+//Obtener visitantes por cedula para autorrellenar
 router.get('/visitantes/cedula/:cedula', async (req, res) => {
   const { cedula } = req.params;
   

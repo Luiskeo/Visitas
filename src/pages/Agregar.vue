@@ -72,19 +72,6 @@
           />
         </div>
         <div class="col-md-4 form-group">
-          <label for="numero_ficha" class="control-label"
-            >NÚMERO DE FICHA</label
-          >
-          <input
-            v-model="formData.numero_ficha"
-            type="text"
-            class="form-control"
-            id="numero_ficha"
-            required
-            placeholder="Digite el número de ficha"
-          />
-        </div>
-        <div class="col-md-4 form-group">
           <label for="area" class="control-label">ÁREA A VISITAR</label>
           <input
             v-model="formData.area"
@@ -118,18 +105,6 @@
             class="form-control"
             id="dispositivo"
             placeholder="Digite el dispositivo que ingresa"
-          />
-        </div>
-        <div class="col-md-4 form-group">
-          <label for="num_placa_dispositivo" class="control-label"
-            >NÚMERO DE LA PLACA</label
-          >
-          <input
-            v-model="formData.num_placa_dispositivo"
-            type="number"
-            class="form-control"
-            id="num_placa_dispositivo"
-            placeholder="Digite el número de placa de dispositivo"
           />
         </div>
         <div class="col-md-4 form-group">
@@ -185,6 +160,9 @@
 <script setup>
 import { ref } from "vue";
 import router from "../router/Rutas";
+import { useToast } from "vue-toastification";
+
+const toast = useToast()
 
 const formData = ref({
   cedula: "",
@@ -193,11 +171,9 @@ const formData = ref({
   entidad: "",
   celular: "",
   eps: "",
-  numero_ficha: "",
   area: "",
   motivo_visita: "",
   dispositivo: "",
-  num_placa_dispositivo: "",
   serial: "",
   fecha_ingreso: "",
   observaciones: "",
@@ -214,13 +190,15 @@ const submitForm = async () => {
       body: JSON.stringify(formData.value),
     });
     if (!response.ok) {
+      toast.error('Error interno del servidor')
       throw new Error("Error en el envío de datos");
     }
     const result = await response.json();
+    toast.success('Datos guardados con exito')
     console.log("Datos guardados con éxito:", result);
-    // Resetear el formulario
     resetForm();
   } catch (error) {
+    toast.error('Error interno del servidor')
     console.error("Error al guardar los datos:", error);
   }
 };
@@ -233,11 +211,9 @@ const resetForm = () => {
     entidad: "",
     celular: "",
     eps: "",
-    numero_ficha: "",
     area: "",
     motivo_visita: "",
     dispositivo: "",
-    num_placa_dispositivo: "",
     serial: "",
     fecha_ingreso: "",
     observaciones: "",
@@ -287,20 +263,23 @@ const goBack = () => {
 html, body {
   display: flex;
   justify-content: center;
-  align-items: center; /* Centrar también verticalmente */
-  height: 100%;
+  align-items: center; /* Centrar verticalmente */
+  min-height: 100vh; /* Altura mínima igual a la altura de la ventana */
   margin: 0;
+  background-color: #2d7ce4 !important; /* Fondo global */
 }
 
 .container {
   max-width: 1200px;
-  width: 100%; /* Para hacer que ocupe el ancho completo en pantallas pequeñas */
-  padding: 20px; /* Agrega padding para que tenga espacio interno en pantallas pequeñas */
+  width: 100%; /* Ocupar todo el ancho disponible */
+  padding: 20px;
   background-color: #d8d9da;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  margin: auto; /* Centrará el contenedor horizontalmente */
+  margin: 50px 0px 50px 120px; /* Centrará el contenedor horizontal y verticalmente */
 }
+
+
 
 /* Formulario de login */
 .form-login {

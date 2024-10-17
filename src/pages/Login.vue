@@ -14,23 +14,31 @@
       <h1 class="font-semibold text-4xl mb-4">Iniciar Sesión</h1>
       <div class="mb-4">
         <label for="usuario" class="label">Usuario</label>
-        <input
-          id="usuario"
-          type="text"
-          v-model="formData.usuario"
-          required
-          class="input"
-        />
+        <div class="input-wrapper">
+          <input
+            id="usuario"
+            type="text"
+            v-model="formData.usuario"
+            required
+            placeholder="Digita usuario"
+            class="input"
+          />
+          <i class="fas fa-user icon"></i>
+        </div>
       </div>
       <div class="mb-4">
         <label for="clave" class="label">Contraseña</label>
-        <input
-          id="clave"
-          type="password"
-          v-model="formData.clave"
-          required
-          class="input"
-        />
+        <div class="input-wrapper">
+          <input
+            id="clave"
+            type="password"
+            v-model="formData.clave"
+            required
+            placeholder="Digita contraseña"
+            class="input"
+          />
+          <i class="fas fa-lock icon"></i>
+        </div>
       </div>
       <div class="flex justify-center mt-4">
         <button type="submit" class="button">Iniciar sesión</button>
@@ -51,12 +59,11 @@ const formData = reactive({
 const toast = useToast();
 const router = useRouter();
 
-// Usa el hook onMounted para asegurarte de que el DOM está cargado antes de interactuar con el video
 onMounted(() => {
-  const video = document.getElementById("video-background") as HTMLVideoElement; // Asegúrate de que el video es un elemento
+  const video = document.getElementById("video-background") as HTMLVideoElement;
   if (video) {
     video.addEventListener("ended", function () {
-      video.pause(); // Pausa el video una vez que termina
+      video.pause();
     });
   }
 });
@@ -74,34 +81,35 @@ const submit = async () => {
     if (response.ok) {
       localStorage.setItem("token", data.token);
       localStorage.setItem("nombre", data.nombre);
-      console.log(`Bienvenido ${data.nombre}`);
-      await router.push({ name: "home" });
+      toast.success(`Bienvenid@, ${data.nombre}`)
+      router.push({ name: "home" });
     } else {
-      toast.error(data.message);
+      toast.error('Usuario o contraseña incorrectos')
       console.error("Error al iniciar sesión:", data.message);
     }
   } catch (error) {
+    toast.error("Error interno del servidor");
     console.error("Error al iniciar sesión:", error);
   }
 };
 </script>
 
 <style>
-/* contenido responsivo */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* Estilos generales */
 html,
 body {
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: bold;
+  color: #333;
   height: 100%;
   margin: 0;
 }
 
-/* Video de fondo */
 #video-background {
   position: fixed;
   top: 0;
@@ -117,10 +125,8 @@ body {
   z-index: 1;
   color: white;
   text-align: center;
-  padding: 20px;
 }
 
-/* Contenedor principal de login */
 .login-container {
   display: flex;
   justify-content: center;
@@ -129,7 +135,6 @@ body {
   position: relative;
 }
 
-/* Formulario de login */
 .login-form {
   position: absolute;
   top: 40vh;
@@ -146,7 +151,6 @@ body {
   text-align: center;
 }
 
-/* Ajustes de campos de formulario */
 .label {
   display: block;
   margin-bottom: 8px;
@@ -154,9 +158,16 @@ body {
   color: #333;
 }
 
+.input-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
 .input {
   width: 100%;
-  padding: 10px;
+  padding: 10px 10px 10px 30px; /* Añadido padding izquierdo para el icono */
   margin-bottom: 16px;
   border: 1px solid #d0d0d0;
   border-radius: 4px;
@@ -166,6 +177,13 @@ body {
 .input:focus {
   border-color: #4a90e2;
   outline: none;
+}
+
+.icon {
+  position: absolute;
+  left: 10px;
+  transform: translateY(-50%);
+  color: gray;
 }
 
 /* Botón de iniciar sesión */
@@ -198,7 +216,7 @@ body {
   }
 
   .input {
-    padding: 8px;
+    padding: 8px 10px 8px 30px; /* Ajustar padding para pantallas pequeñas */
     font-size: 0.9rem;
   }
 
@@ -219,7 +237,7 @@ body {
   }
 
   .input {
-    padding: 6px;
+    padding: 6px 10px 6px 30px; /* Ajustar padding para pantallas pequeñas */
     font-size: 0.85rem;
   }
 
