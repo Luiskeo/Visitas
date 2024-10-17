@@ -1,13 +1,13 @@
 import { createApp } from 'vue';
-import App from './App.vue'; // Renombrar aquí
-import router from './router/Rutas'; // Asegúrate de que la ruta sea correcta
+import App from './App.vue'; 
+import router from './router/Rutas'; 
 import Toast from 'vue-toastification';
-import 'vue-toastification/dist/index.css'; // Importa los estilos de vue-toastification
+import 'vue-toastification/dist/index.css'; 
 import 'bootstrap'
-import '@fontsource/montserrat'; // Fuente normal (400 por defecto)
-import '@fontsource/montserrat/700.css'; // Importar peso 700
+import '@fontsource/montserrat'; 
+import '@fontsource/montserrat/700.css'; 
 
-const app = createApp(App); // Usa el nombre correcto aquí
+const app = createApp(App); 
 
 const options = {
   position: 'top-center',

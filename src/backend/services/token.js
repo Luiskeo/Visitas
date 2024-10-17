@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 
-const secretKey = '987987987987987987987987'; // Cambia esto por una clave secreta fuerte
+const secretKey = '987987987987987987987987'; 
 
 export const generateToken = (payload) => {
   const tokenPayload = {

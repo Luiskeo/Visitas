@@ -1,9 +1,9 @@
 import exceljs from 'exceljs';
-import pool from '../connect.js'; // Importa la pool que ya creaste
+import pool from '../connect.js'; 
 
 export async function exportToExcel() {
     try {
-        // Usa la pool para ejecutar la consulta
+        // Usar la pool para ejecutar la consulta
         const [rows] = await pool.query('SELECT * FROM visitante');
         // Crear un nuevo libro de Excel
         const workbook = new exceljs.Workbook();
