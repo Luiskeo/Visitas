@@ -182,7 +182,7 @@ const formData = ref({
 // Método para manejar el envío del formulario
 const submitForm = async () => {
   try {
-    const response = await fetch("http://172.16.0.115:3000/api/visitantes", {
+    const response = await fetch("http://172.16.0.108:3000/api/visitantes", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -194,7 +194,7 @@ const submitForm = async () => {
       throw new Error("Error en el envío de datos");
     }
     const result = await response.json();
-    toast.success('Datos guardados con exito')
+    toast.success('Datos guardados con exito', {icon: "fa-solid fa-user-plus"})
     console.log("Datos guardados con éxito:", result);
     resetForm();
   } catch (error) {
@@ -226,7 +226,7 @@ const resetForm = () => {
 const checkCedula = async () => {
   if (formData.value.cedula) {
     try {
-      const response = await fetch(`http://172.16.0.115:3000/api/visitantes/cedula/${formData.value.cedula}`);
+      const response = await fetch(`http://172.16.0.108:3000/api/visitantes/cedula/${formData.value.cedula}`);
       const visitor = await response.json();
       if (visitor) {
         formData.value.nombre = visitor.nombre;
@@ -235,6 +235,7 @@ const checkCedula = async () => {
         formData.value.celular = visitor.celular;
         formData.value.eps = visitor.eps;
         formData.value.area = visitor.area;
+        toast.info(`Rellenando datos del visitante ${visitor.nombre}`, {icon: "fa-solid fa-warning"})
       } else{
         resetForm();
       }

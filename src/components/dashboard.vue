@@ -71,7 +71,7 @@
                   <td>{{ visitor.dispositivo }}</td>
                   <td>{{ visitor.num_placa_dispositivo }}</td>
                   <td>{{ visitor.serial }}</td>
-                  <td>{{ visitor.fecha_ingreso }}</td>
+                  <td>{{ formatDate(visitor.fecha_ingreso) }}</td>
                   <td>{{ visitor.observaciones }}</td>
                 </tr>
               </tbody>
@@ -101,7 +101,7 @@ const filteredVisitors = ref([]);
 
 // Función para obtener los datos del usuario
 const fetchUserData = async () => {
-  token.value = localStorage.getItem('token') || '';
+  token.value = sessionStorage.getItem('token') || '';
   if (!token.value) {
     router.push({ name: 'login' });
     toast.error('Debe iniciar sesión');
@@ -111,12 +111,12 @@ const fetchUserData = async () => {
 // Función para obtener los visitantes
 const fetchVisitors = async () => {
   try {
-    const response = await fetch('http://172.16.0.115:3000/api/visitantes');
+    const response = await fetch('http://172.16.0.108:3000/api/visitantes');
     if (!response.ok) throw new Error('Error al obtener los datos');
     const data = await response.json();
     if (Array.isArray(data)) {
       visitors.value = data;
-      filteredVisitors.value = data; // Inicializa lo
+      filteredVisitors.value = data;
     } else {
       console.error('Los datos no son un array:', data);
     }
@@ -127,10 +127,10 @@ const fetchVisitors = async () => {
 
 // Función para descargar el reporte en CSV
 const downloadReport = async () => {
-  const response = await fetch ('http://172.16.0.115:3000/api/visitantes/download')
+  const response = await fetch('http://172.16.0.108:3000/api/visitantes/download');
   if (!response.ok) {
-    toast.error('Error interno del servidor al descargar reporte')
-    throw new Error('Error al descargar el reporte')
+    toast.error('Error interno del servidor al descargar reporte');
+    throw new Error('Error al descargar el reporte');
   }
   const data = await response.blob();
   const url = URL.createObjectURL(data);
@@ -139,14 +139,16 @@ const downloadReport = async () => {
   link.download = 'REPORTE_VISITAS_C&C.xlsx';
   link.click();
   URL.revokeObjectURL(url);
-  toast.success(`${link.download} descargado con exito`);
+  toast.success(`${link.download} descargado con éxito`, {
+    icon: 'fa-solid fa-download',
+  });
   console.log('Reporte descargado');
 };
 
 // Método de búsqueda
 const search = async () => {
   try {
-    const response = await fetch(`http://172.16.0.115:3000/api/visitantes/search?query=${encodeURIComponent(query.value)}`);
+    const response = await fetch(`http://172.16.0.108:3000/api/visitantes/search?query=${encodeURIComponent(query.value)}`);
     if (!response.ok) throw new Error('Error en la búsqueda');
     const data = await response.json();
     if (Array.isArray(data)) {
@@ -161,9 +163,21 @@ const search = async () => {
 
 // Función de logout
 const logout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('nombre');
+  sessionStorage.removeItem('token');
+  sessionStorage.removeItem('nombre');
   router.push({ name: 'login' });
+};
+
+// Función para formatear fecha
+const formatDate = (dateString) => {
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  };
+  return new Date(dateString).toLocaleString('es-ES', options);
 };
 
 // Cargar datos al montar el componente
@@ -171,8 +185,6 @@ onMounted(() => {
   fetchUserData();
   fetchVisitors();
 });
-
-
 </script>
 
 <style scoped>
@@ -262,7 +274,7 @@ onMounted(() => {
 
 /* Tabla */
 .table-responsive {
-  max-height: 500px;
+  max-height: 570px !important;
   overflow-y: auto;
 }
 
