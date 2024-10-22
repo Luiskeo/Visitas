@@ -81,7 +81,7 @@ const submit = async () => {
     if (response.ok) {
       sessionStorage.setItem("token", data.token);
       sessionStorage.setItem("nombre", data.nombre);
-      toast.success(`Bienvenido ${data.nombre}`, {icon: 'fa-solid fa-user-check'});
+      toast.success(`Bienvenid@, ${data.nombre}`, {icon: 'fa-solid fa-user-check'});
       router.push({ name: "home" });
     } else {
       toast.error("Usuario o contraseña incorrectos", {icon: 'fa-solid fa-user-times'});

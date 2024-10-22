@@ -162,7 +162,7 @@ import { ref } from "vue";
 import router from "../router/Rutas";
 import { useToast } from "vue-toastification";
 
-const toast = useToast()
+const toast = useToast();
 
 const formData = ref({
   cedula: "",
@@ -190,15 +190,18 @@ const submitForm = async () => {
       body: JSON.stringify(formData.value),
     });
     if (!response.ok) {
-      toast.error('Error interno del servidor')
+      toast.error("Error interno del servidor");
       throw new Error("Error en el envío de datos");
     }
     const result = await response.json();
-    toast.success('Datos guardados con exito', {icon: "fa-solid fa-user-plus"})
+    toast.success("Datos guardados con exito", {
+      icon: "fa-solid fa-user-plus",
+    });
     console.log("Datos guardados con éxito:", result);
     resetForm();
+    goBack();
   } catch (error) {
-    toast.error('Error interno del servidor')
+    toast.error("Error interno del servidor");
     console.error("Error al guardar los datos:", error);
   }
 };
@@ -220,13 +223,13 @@ const resetForm = () => {
   };
 };
 
-
-
 //Funcion para autocompletar agregando por cedula
 const checkCedula = async () => {
   if (formData.value.cedula) {
     try {
-      const response = await fetch(`http://172.16.0.108:3000/api/visitantes/cedula/${formData.value.cedula}`);
+      const response = await fetch(
+        `http://172.16.0.108:3000/api/visitantes/cedula/${formData.value.cedula}`
+      );
       const visitor = await response.json();
       if (visitor) {
         formData.value.nombre = visitor.nombre;
@@ -235,8 +238,10 @@ const checkCedula = async () => {
         formData.value.celular = visitor.celular;
         formData.value.eps = visitor.eps;
         formData.value.area = visitor.area;
-        toast.info(`Rellenando datos del visitante ${visitor.nombre}`, {icon: "fa-solid fa-warning"})
-      } else{
+        toast.success(`Datos encontrados de: ${visitor.nombre}`, {
+          icon: "fa-solid fa-user-check",
+        });
+      } else {
         resetForm();
       }
     } catch (error) {
@@ -252,7 +257,6 @@ const goBack = () => {
 };
 </script>
 <style scoped>
-
 /* contenido responsivo */
 * {
   box-sizing: border-box;
@@ -261,7 +265,8 @@ const goBack = () => {
 }
 
 /* Estilos generales */
-html, body {
+html,
+body {
   display: flex;
   justify-content: center;
   align-items: center; /* Centrar verticalmente */
@@ -279,8 +284,6 @@ html, body {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   margin: 50px 0px 50px 120px; /* Centrará el contenedor horizontal y verticalmente */
 }
-
-
 
 /* Formulario de login */
 .form-login {
@@ -353,8 +356,8 @@ footer p {
 /* Eliminar el padding */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* Media Queries para hacerlo más responsive */
@@ -371,6 +374,4 @@ input[type="number"]::-webkit-outer-spin-button {
     max-width: 100%; /* Ocupará el ancho completo en pantallas muy pequeñas */
   }
 }
-
 </style>
-

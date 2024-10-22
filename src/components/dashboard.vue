@@ -46,18 +46,16 @@
                   <th scope="col">ENTIDAD</th>
                   <th scope="col">NÚM CEL</th>
                   <th scope="col">EPS</th>
-                  <th scope="col">NÚM FICHA</th>
                   <th scope="col">ÁREA</th>
                   <th scope="col">MOTIVO VISITA</th>
                   <th scope="col">DISPOSITIVOS</th>
-                  <th scope="col">NÚM PLACA DISPOSITIVO</th>
                   <th scope="col">SERIAL</th>
-                  <th scope="col">FECHA INGRESO</th>
+                  <th scope="col">FECHA DE INGRESO</th>
                   <th scope="col">OBSERVACIÓN</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="visitor in filteredVisitors" :key="visitor.idvisitante">
+                <tr v-for="visitor in filteredVisitors.slice().reverse()" :key="visitor.idvisitante">
                   <td>{{ visitor.idvisitante }}</td>
                   <td>{{ visitor.cedula }}</td>
                   <td>{{ visitor.nombre }}</td>
@@ -65,13 +63,11 @@
                   <td>{{ visitor.entidad }}</td>
                   <td>{{ visitor.celular }}</td>
                   <td>{{ visitor.eps }}</td>
-                  <td>{{ visitor.numero_ficha }}</td>
                   <td>{{ visitor.area }}</td>
                   <td>{{ visitor.motivo_visita }}</td>
                   <td>{{ visitor.dispositivo }}</td>
-                  <td>{{ visitor.num_placa_dispositivo }}</td>
                   <td>{{ visitor.serial }}</td>
-                  <td>{{ formatDate(visitor.fecha_ingreso) }}</td>
+                  <td>{{ formatFecha(visitor.fecha_ingreso) }}</td>
                   <td>{{ visitor.observaciones }}</td>
                 </tr>
               </tbody>
@@ -148,6 +144,9 @@ const downloadReport = async () => {
 // Método de búsqueda
 const search = async () => {
   try {
+    if (!query.value) {
+      filteredVisitors.value = visitors.value;
+    }
     const response = await fetch(`http://172.16.0.108:3000/api/visitantes/search?query=${encodeURIComponent(query.value)}`);
     if (!response.ok) throw new Error('Error en la búsqueda');
     const data = await response.json();
@@ -168,17 +167,22 @@ const logout = () => {
   router.push({ name: 'login' });
 };
 
-// Función para formatear fecha
-const formatDate = (dateString) => {
-  const options = {
+const formatFecha = (fecha) => {
+  const date = new Date(fecha);
+  // Ajusta la fecha restando las horas que necesites
+  date.setHours(date.getHours() + 5); // Cambia -5 por la diferencia horaria necesaria
+  const opciones = {
     year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
+    month: 'long',
+    day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
+    hour12: true
   };
-  return new Date(dateString).toLocaleString('es-ES', options);
+  return date.toLocaleString('es-ES', opciones);
 };
+
+
 
 // Cargar datos al montar el componente
 onMounted(() => {
