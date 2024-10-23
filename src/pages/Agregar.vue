@@ -46,6 +46,7 @@
           <input
             v-model="formData.entidad"
             type="text"
+            required
             class="form-control"
             id="entidad"
             placeholder="Digite la entidad de la que proviene"
@@ -56,6 +57,7 @@
           <input
             v-model="formData.celular"
             type="number"
+            required
             class="form-control"
             id="celular"
             placeholder="Digite el celular"
@@ -66,6 +68,7 @@
           <input
             v-model="formData.eps"
             type="text"
+            required
             class="form-control"
             id="eps"
             placeholder="Digite la EPS"
@@ -95,23 +98,47 @@
             placeholder="Digite el motivo de la visita"
           />
         </div>
+        <!-- Sección para dispositivo a ingresar -->
         <div class="col-md-4 form-group">
-          <label for="dispositivo" class="control-label"
-            >DISPOSITIVO A INGRESAR</label
-          >
-          <input
-            v-model="formData.dispositivo"
-            type="text"
-            class="form-control"
-            id="dispositivo"
-            placeholder="Digite el dispositivo que ingresa"
-          />
+          <label for="dispositivo" class="control-label">¿Se ingresa dispositivo?:</label>
+          <div class="d-inline-flex ml-4">
+            <label>
+              <input
+                type="radio"
+                value="si"
+                v-model="dispositivoSeleccionado"
+                @change="mostrarInput('si')"
+              />
+              Sí
+            </label>
+            <label style="margin-left: 15px;">
+              <input
+                type="radio"
+                value="no"
+                v-model="dispositivoSeleccionado"
+                @change="mostrarInput('no')"
+              />
+              No
+            </label>
+          </div>
+          <!-- Campo de texto que se muestra solo si selecciona "Sí" -->
+          <div v-if="mostrarInputDispositivo">
+            <input
+              v-model="formData.dispositivo"
+              type="text"
+              required
+              class="form-control"
+              id="dispositivo"
+              placeholder="Digite el dispositivo que ingresa"
+            />
+          </div>
         </div>
         <div class="col-md-4 form-group">
           <label for="serial" class="control-label">NÚMERO DE SERIAL</label>
           <input
             v-model="formData.serial"
             type="number"
+            required
             class="form-control"
             id="serial"
             placeholder="Digite el serial"
@@ -134,7 +161,7 @@
           <textarea
             v-model="formData.observaciones"
             id="observaciones"
-            class="form-control-observacion"
+            class="form-control"
             max="254"
             placeholder="Digite la observación"
           ></textarea>
@@ -178,6 +205,23 @@ const formData = ref({
   fecha_ingreso: "",
   observaciones: "",
 });
+
+
+const dispositivoSeleccionado = ref("");
+const mostrarInputDispositivo = ref(false);
+
+// Función que muestra o esconde el input de dispositivo según la selección
+const mostrarInput = (valor) => {
+  if (valor === "si") {
+    mostrarInputDispositivo.value = true;
+    formData.value.dispositivo = ""; // Limpiar el campo en caso de que seleccione 'Sí'
+  } else if (valor === "no") {
+    mostrarInputDispositivo.value = false;
+    formData.value.dispositivo = "NO"; // Asignar "NO" automáticamente si selecciona 'No'
+    formData.value.serial = 0;
+  }
+};
+
 
 // Método para manejar el envío del formulario
 const submitForm = async () => {
@@ -238,8 +282,9 @@ const checkCedula = async () => {
         formData.value.celular = visitor.celular;
         formData.value.eps = visitor.eps;
         formData.value.area = visitor.area;
-        toast.success(`Datos encontrados de: ${visitor.nombre}`, {
+        toast.success(`Datos encontrados de: ${visitor.nombre} ${visitor.apellido}`, {
           icon: "fa-solid fa-user-check",
+          timeout: 3000
         });
       } else {
         resetForm();
@@ -272,7 +317,7 @@ body {
   align-items: center; /* Centrar verticalmente */
   min-height: 100vh; /* Altura mínima igual a la altura de la ventana */
   margin: 0;
-  background-color: #2d7ce4 !important; /* Fondo global */
+  background-color: #f74e00 !important; /* Fondo global */
 }
 
 .container {
@@ -310,19 +355,10 @@ body {
   box-shadow: 0 0 5px rgba(0, 86, 179, 0.5);
   background-color: #e9f5ff;
 }
-.form-control-observacion {
-  width: 100%;
-  border: 2px solid #aac7e5;
-  border-radius: 8px;
-  padding: 12px;
-  background-color: #f8f9fa;
-  resize: vertical;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-.form-control-observacion:focus {
-  border-color: #0056b3;
-  box-shadow: 0 0 5px rgba(0, 86, 179, 0.5);
-  background-color: #e9f5ff;
+/* Cambiar estilo cuando el campo es válido */
+input:valid {
+  background-color: #dff0d8; /* Fondo verde suave */
+  border-color: #28a745; /* Borde verde */
 }
 .btn {
   padding: 10px 20px;

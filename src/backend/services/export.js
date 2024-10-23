@@ -31,7 +31,6 @@ export async function exportToExcel() {
         rows.forEach(row => {
             worksheet.addRow(row);
         });
-
         // Generar el archivo en memoria (buffer)
         const buffer = await workbook.xlsx.writeBuffer();
         return buffer;  // Devuelve el buffer para que pueda ser enviado al cliente
