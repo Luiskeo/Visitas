@@ -13,11 +13,11 @@
         <div class="col-12">
           <div class="nav-bar">
             <div class="d-flex">
-              <RouterLink :to="{ name: 'agregar' }" class="btn btn-outline-success p-2">
+              <RouterLink :to="{ name: 'agregar' }" class="btn btn-outline-success p-2 ml-2">
                 Agregar
               </RouterLink>
               <div>
-                <button class="btn btn-outline-info p-2" @click="downloadReport">
+                <button class="btn btn-outline-info p-2 ml-1" @click="downloadReport">
                   Descargar Reporte
                 </button>
               </div>
@@ -30,8 +30,11 @@
                 placeholder="Buscar Visitante"
                 aria-label="Search"
               />
-              <button class="btn btn-outline-success" type="button" @click="search">
+              <button class="btn btn-outline-success ml-1" type="button" @click="search">
                 Buscar
+              </button>
+              <button class="btn btn-outline-info ml-1" type="button" @click="showAll">
+                Limpiar
               </button>
             </form>
           </div>
@@ -141,6 +144,12 @@ const downloadReport = async () => {
   console.log('Reporte descargado');
 };
 
+
+const showAll = async () =>{
+  query.value = '';
+  await fetchVisitors();
+  await search();
+}
 // Método de búsqueda
 const search = async () => {
   try {
@@ -198,7 +207,7 @@ onMounted(() => {
   padding: 0;
   box-sizing: border-box;
   font-family: 'Montserrat', sans-serif !important;
-  text-align:center;
+  text-align: center;
 }
 
 .header {
@@ -271,7 +280,7 @@ onMounted(() => {
 }
 
 .btn-outline-info:hover {
-  background-color: #0cc5f3;
+  background-color: #173e86;
   color: white;
 }
 
@@ -293,8 +302,8 @@ onMounted(() => {
   z-index: 100;
   background-color: #4c6a8a;
   box-shadow: 0 2px 2px rgba(243, 240, 240, 0.1); 
+  vertical-align: middle;
 }
-
 
 .table td, .table th {
   padding: 0px;
@@ -309,7 +318,6 @@ onMounted(() => {
   max-height: 500px;
   overflow-y: auto;
 }
-
 
 /* Formulario de búsqueda */
 .form-control {

@@ -317,7 +317,6 @@ body {
   align-items: center; /* Centrar verticalmente */
   min-height: 100vh; /* Altura mínima igual a la altura de la ventana */
   margin: 0;
-  background-color: #f74e00 !important; /* Fondo global */
 }
 
 .container {
