@@ -70,7 +70,7 @@ onMounted(() => {
 
 const submit = async () => {
   try {
-    const response = await fetch("http://172.16.0.115:3000/auth/login", {
+    const response = await fetch("http://172.16.0.108:3000/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -79,12 +79,12 @@ const submit = async () => {
     });
     const data = await response.json();
     if (response.ok) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("nombre", data.nombre);
-      toast.success(`Bienvenid@, ${data.nombre}`)
+      sessionStorage.setItem("token", data.token);
+      sessionStorage.setItem("nombre", data.nombre);
+      toast.success(`Bienvenid@, ${data.nombre}`, {icon: 'fa-solid fa-user-check'});
       router.push({ name: "home" });
     } else {
-      toast.error('Usuario o contraseña incorrectos')
+      toast.error("Usuario o contraseña incorrectos", {icon: 'fa-solid fa-user-times'});
       console.error("Error al iniciar sesión:", data.message);
     }
   } catch (error) {
@@ -103,7 +103,7 @@ const submit = async () => {
 
 html,
 body {
-  font-family: 'Montserrat', sans-serif !important;
+  font-family: "Montserrat", sans-serif !important;
   font-weight: bold;
   color: #333;
   height: 100%;
@@ -119,6 +119,7 @@ body {
   object-fit: cover;
   z-index: -1;
 }
+
 
 .video-container {
   position: relative;
@@ -167,7 +168,7 @@ body {
 
 .input {
   width: 100%;
-  padding: 10px 10px 10px 30px; /* Añadido padding izquierdo para el icono */
+  padding: 10px 10px 10px 30px; 
   margin-bottom: 16px;
   border: 1px solid #d0d0d0;
   border-radius: 4px;
@@ -216,7 +217,7 @@ body {
   }
 
   .input {
-    padding: 8px 10px 8px 30px; /* Ajustar padding para pantallas pequeñas */
+    padding: 8px 10px 8px 30px; 
     font-size: 0.9rem;
   }
 
@@ -237,7 +238,7 @@ body {
   }
 
   .input {
-    padding: 6px 10px 6px 30px; /* Ajustar padding para pantallas pequeñas */
+    padding: 6px 10px 6px 30px; 
     font-size: 0.85rem;
   }
 

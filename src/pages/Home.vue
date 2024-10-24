@@ -20,15 +20,15 @@ body{
 }
 .logout-button {
   padding: 10px 20px;
-  background-color: #4A90E2; /* Color del botón */
-  color: white; /* Color del texto */
-  border: none; /* Sin borde */
-  border-radius: 4px; /* Bordes redondeados */
-  cursor: pointer; /* Cambia el cursor al pasar */
-  transition: background-color 0.3s; /* Transición suave */
+  background-color: #4A90E2; 
+  color: white; 
+  border: none; 
+  border-radius: 4px; 
+  cursor: pointer; 
+  transition: background-color 0.3s; 
 }
 
 .logout-button:hover {
-  background-color: #357ABD; /* Color del botón al pasar el ratón */
+  background-color: #357ABD; 
 }
 </style>

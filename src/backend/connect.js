@@ -1,9 +1,9 @@
 import { createPool } from 'mysql2'
 
 const pool = createPool({
-  host: 'localhost',
+  host: '172.16.0.6',
   user: 'root',
-  password: 'T3cn0l0g142023*',
+  password: '*4b0g4d0s4s*',
   database: 'visitas',
   waitForConnections: true,
   charset: 'utf8mb4',

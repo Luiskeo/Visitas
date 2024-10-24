@@ -9,14 +9,15 @@ const cache = new NodeCache({ stdTTL: 300, checkperiod: 60 }) // 5 minutos de TT
 const verifyTokenRouter = Router();
 
 
-verifyTokenRouter.get('/api', (req, res) => {
-  const { token } = req.body
+verifyTokenRouter.post('/verify-token', (req, res) => {
+  const { token, usuario } = req.body
 
   const cachedToken = cache.get(token)
 
-  if(cachedToken) {
-    if (moment().isAfter(cachedToken.expirationDate)){
-      cache.del(token)
+  if (cachedToken && cachedToken.usuario === usuario) {
+    // Verifica si el token ha expirado
+    if (moment().isAfter(cachedToken.expirationDate)) {
+      cache.del(token) // Elimina el token expirado
       return res.status(400).json({ success: false, message: 'El token ha expirado' })
     }
     return res.status(200).json({ success: true })
