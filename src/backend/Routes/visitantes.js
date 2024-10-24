@@ -15,13 +15,14 @@ router.get('/visitantes', async (req, res) => {
     res.status(500).send('Error en la consulta');
   }
 });
+
 //Ingresar visitante
 router.post('/visitantes', async (req, res) => {
-  const { cedula, nombre, apellido, entidad, celular, eps, numero_ficha, area, motivo_visita, dispositivo, num_placa_dispositivo, serial, fecha_ingreso, observaciones } = req.body; 
+  const { cedula, nombre, apellido, entidad, celular, eps, area, motivo_visita, dispositivo, serial, fecha_ingreso, observaciones } = req.body; 
   try {
     const [result] = await pool.query(
-      'INSERT INTO visitante (cedula, nombre, apellido, entidad, celular, eps, numero_ficha, area, motivo_visita, dispositivo, num_placa_dispositivo, serial, fecha_ingreso, observaciones) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [cedula, nombre, apellido, entidad, celular, eps, numero_ficha, area, motivo_visita, dispositivo, num_placa_dispositivo, serial, fecha_ingreso, observaciones]
+      'INSERT INTO visitante (cedula, nombre, apellido, entidad, celular, eps, area, motivo_visita, dispositivo, serial, fecha_ingreso, observaciones) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [cedula, nombre, apellido, entidad, celular, eps, area, motivo_visita, dispositivo, serial, fecha_ingreso, observaciones]
     );
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.json(result);

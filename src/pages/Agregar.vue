@@ -46,6 +46,7 @@
           <input
             v-model="formData.entidad"
             type="text"
+            required
             class="form-control"
             id="entidad"
             placeholder="Digite la entidad de la que proviene"
@@ -56,6 +57,7 @@
           <input
             v-model="formData.celular"
             type="number"
+            required
             class="form-control"
             id="celular"
             placeholder="Digite el celular"
@@ -66,6 +68,7 @@
           <input
             v-model="formData.eps"
             type="text"
+            required
             class="form-control"
             id="eps"
             placeholder="Digite la EPS"
@@ -95,23 +98,47 @@
             placeholder="Digite el motivo de la visita"
           />
         </div>
+        <!-- Sección para dispositivo a ingresar -->
         <div class="col-md-4 form-group">
-          <label for="dispositivo" class="control-label"
-            >DISPOSITIVO A INGRESAR</label
-          >
-          <input
-            v-model="formData.dispositivo"
-            type="text"
-            class="form-control"
-            id="dispositivo"
-            placeholder="Digite el dispositivo que ingresa"
-          />
+          <label for="dispositivo" class="control-label">¿Se ingresa dispositivo?:</label>
+          <div class="d-inline-flex ml-4">
+            <label>
+              <input
+                type="radio"
+                value="si"
+                v-model="dispositivoSeleccionado"
+                @change="mostrarInput('si')"
+              />
+              Sí
+            </label>
+            <label style="margin-left: 15px;">
+              <input
+                type="radio"
+                value="no"
+                v-model="dispositivoSeleccionado"
+                @change="mostrarInput('no')"
+              />
+              No
+            </label>
+          </div>
+          <!-- Campo de texto que se muestra solo si selecciona "Sí" -->
+          <div v-if="mostrarInputDispositivo">
+            <input
+              v-model="formData.dispositivo"
+              type="text"
+              required
+              class="form-control"
+              id="dispositivo"
+              placeholder="Digite el dispositivo que ingresa"
+            />
+          </div>
         </div>
         <div class="col-md-4 form-group">
           <label for="serial" class="control-label">NÚMERO DE SERIAL</label>
           <input
             v-model="formData.serial"
             type="number"
+            required
             class="form-control"
             id="serial"
             placeholder="Digite el serial"
@@ -134,7 +161,7 @@
           <textarea
             v-model="formData.observaciones"
             id="observaciones"
-            class="form-control-observacion"
+            class="form-control"
             max="254"
             placeholder="Digite la observación"
           ></textarea>
@@ -162,7 +189,7 @@ import { ref } from "vue";
 import router from "../router/Rutas";
 import { useToast } from "vue-toastification";
 
-const toast = useToast()
+const toast = useToast();
 
 const formData = ref({
   cedula: "",
@@ -179,10 +206,27 @@ const formData = ref({
   observaciones: "",
 });
 
+
+const dispositivoSeleccionado = ref("");
+const mostrarInputDispositivo = ref(false);
+
+// Función que muestra o esconde el input de dispositivo según la selección
+const mostrarInput = (valor) => {
+  if (valor === "si") {
+    mostrarInputDispositivo.value = true;
+    formData.value.dispositivo = ""; // Limpiar el campo en caso de que seleccione 'Sí'
+  } else if (valor === "no") {
+    mostrarInputDispositivo.value = false;
+    formData.value.dispositivo = "NO"; // Asignar "NO" automáticamente si selecciona 'No'
+    formData.value.serial = 0;
+  }
+};
+
+
 // Método para manejar el envío del formulario
 const submitForm = async () => {
   try {
-    const response = await fetch("http://172.16.0.115:3000/api/visitantes", {
+    const response = await fetch("http://172.16.0.108:3000/api/visitantes", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -190,15 +234,18 @@ const submitForm = async () => {
       body: JSON.stringify(formData.value),
     });
     if (!response.ok) {
-      toast.error('Error interno del servidor')
+      toast.error("Error interno del servidor");
       throw new Error("Error en el envío de datos");
     }
     const result = await response.json();
-    toast.success('Datos guardados con exito')
+    toast.success("Datos guardados con exito", {
+      icon: "fa-solid fa-user-plus",
+    });
     console.log("Datos guardados con éxito:", result);
     resetForm();
+    goBack();
   } catch (error) {
-    toast.error('Error interno del servidor')
+    toast.error("Error interno del servidor");
     console.error("Error al guardar los datos:", error);
   }
 };
@@ -220,13 +267,13 @@ const resetForm = () => {
   };
 };
 
-
-
 //Funcion para autocompletar agregando por cedula
 const checkCedula = async () => {
   if (formData.value.cedula) {
     try {
-      const response = await fetch(`http://172.16.0.115:3000/api/visitantes/cedula/${formData.value.cedula}`);
+      const response = await fetch(
+        `http://172.16.0.108:3000/api/visitantes/cedula/${formData.value.cedula}`
+      );
       const visitor = await response.json();
       if (visitor) {
         formData.value.nombre = visitor.nombre;
@@ -235,7 +282,11 @@ const checkCedula = async () => {
         formData.value.celular = visitor.celular;
         formData.value.eps = visitor.eps;
         formData.value.area = visitor.area;
-      } else{
+        toast.success(`Datos encontrados de: ${visitor.nombre} ${visitor.apellido}`, {
+          icon: "fa-solid fa-user-check",
+          timeout: 3000
+        });
+      } else {
         resetForm();
       }
     } catch (error) {
@@ -251,7 +302,6 @@ const goBack = () => {
 };
 </script>
 <style scoped>
-
 /* contenido responsivo */
 * {
   box-sizing: border-box;
@@ -260,13 +310,13 @@ const goBack = () => {
 }
 
 /* Estilos generales */
-html, body {
+html,
+body {
   display: flex;
   justify-content: center;
   align-items: center; /* Centrar verticalmente */
   min-height: 100vh; /* Altura mínima igual a la altura de la ventana */
   margin: 0;
-  background-color: #2d7ce4 !important; /* Fondo global */
 }
 
 .container {
@@ -278,8 +328,6 @@ html, body {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   margin: 50px 0px 50px 120px; /* Centrará el contenedor horizontal y verticalmente */
 }
-
-
 
 /* Formulario de login */
 .form-login {
@@ -306,19 +354,10 @@ html, body {
   box-shadow: 0 0 5px rgba(0, 86, 179, 0.5);
   background-color: #e9f5ff;
 }
-.form-control-observacion {
-  width: 100%;
-  border: 2px solid #aac7e5;
-  border-radius: 8px;
-  padding: 12px;
-  background-color: #f8f9fa;
-  resize: vertical;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-.form-control-observacion:focus {
-  border-color: #0056b3;
-  box-shadow: 0 0 5px rgba(0, 86, 179, 0.5);
-  background-color: #e9f5ff;
+/* Cambiar estilo cuando el campo es válido */
+input:valid {
+  background-color: #dff0d8; /* Fondo verde suave */
+  border-color: #28a745; /* Borde verde */
 }
 .btn {
   padding: 10px 20px;
@@ -352,8 +391,8 @@ footer p {
 /* Eliminar el padding */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* Media Queries para hacerlo más responsive */
@@ -370,6 +409,4 @@ input[type="number"]::-webkit-outer-spin-button {
     max-width: 100%; /* Ocupará el ancho completo en pantallas muy pequeñas */
   }
 }
-
 </style>
-

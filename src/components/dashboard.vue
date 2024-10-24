@@ -13,11 +13,11 @@
         <div class="col-12">
           <div class="nav-bar">
             <div class="d-flex">
-              <RouterLink :to="{ name: 'agregar' }" class="btn btn-outline-success p-2">
+              <RouterLink :to="{ name: 'agregar' }" class="btn btn-outline-success p-2 ml-2">
                 Agregar
               </RouterLink>
               <div>
-                <button class="btn btn-outline-info p-2" @click="downloadReport">
+                <button class="btn btn-outline-info p-2 ml-1" @click="downloadReport">
                   Descargar Reporte
                 </button>
               </div>
@@ -30,8 +30,11 @@
                 placeholder="Buscar Visitante"
                 aria-label="Search"
               />
-              <button class="btn btn-outline-success" type="button" @click="search">
+              <button class="btn btn-outline-success ml-1" type="button" @click="search">
                 Buscar
+              </button>
+              <button class="btn btn-outline-info ml-1" type="button" @click="showAll">
+                Limpiar
               </button>
             </form>
           </div>
@@ -46,18 +49,16 @@
                   <th scope="col">ENTIDAD</th>
                   <th scope="col">NÚM CEL</th>
                   <th scope="col">EPS</th>
-                  <th scope="col">NÚM FICHA</th>
                   <th scope="col">ÁREA</th>
                   <th scope="col">MOTIVO VISITA</th>
                   <th scope="col">DISPOSITIVOS</th>
-                  <th scope="col">NÚM PLACA DISPOSITIVO</th>
                   <th scope="col">SERIAL</th>
-                  <th scope="col">FECHA INGRESO</th>
+                  <th scope="col">FECHA DE INGRESO</th>
                   <th scope="col">OBSERVACIÓN</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="visitor in filteredVisitors" :key="visitor.idvisitante">
+                <tr v-for="visitor in filteredVisitors.slice().reverse()" :key="visitor.idvisitante">
                   <td>{{ visitor.idvisitante }}</td>
                   <td>{{ visitor.cedula }}</td>
                   <td>{{ visitor.nombre }}</td>
@@ -65,13 +66,11 @@
                   <td>{{ visitor.entidad }}</td>
                   <td>{{ visitor.celular }}</td>
                   <td>{{ visitor.eps }}</td>
-                  <td>{{ visitor.numero_ficha }}</td>
                   <td>{{ visitor.area }}</td>
                   <td>{{ visitor.motivo_visita }}</td>
                   <td>{{ visitor.dispositivo }}</td>
-                  <td>{{ visitor.num_placa_dispositivo }}</td>
                   <td>{{ visitor.serial }}</td>
-                  <td>{{ visitor.fecha_ingreso }}</td>
+                  <td>{{ formatFecha(visitor.fecha_ingreso) }}</td>
                   <td>{{ visitor.observaciones }}</td>
                 </tr>
               </tbody>
@@ -101,7 +100,7 @@ const filteredVisitors = ref([]);
 
 // Función para obtener los datos del usuario
 const fetchUserData = async () => {
-  token.value = localStorage.getItem('token') || '';
+  token.value = sessionStorage.getItem('token') || '';
   if (!token.value) {
     router.push({ name: 'login' });
     toast.error('Debe iniciar sesión');
@@ -111,12 +110,12 @@ const fetchUserData = async () => {
 // Función para obtener los visitantes
 const fetchVisitors = async () => {
   try {
-    const response = await fetch('http://172.16.0.115:3000/api/visitantes');
+    const response = await fetch('http://172.16.0.108:3000/api/visitantes');
     if (!response.ok) throw new Error('Error al obtener los datos');
     const data = await response.json();
     if (Array.isArray(data)) {
       visitors.value = data;
-      filteredVisitors.value = data; // Inicializa lo
+      filteredVisitors.value = data;
     } else {
       console.error('Los datos no son un array:', data);
     }
@@ -127,10 +126,10 @@ const fetchVisitors = async () => {
 
 // Función para descargar el reporte en CSV
 const downloadReport = async () => {
-  const response = await fetch ('http://172.16.0.115:3000/api/visitantes/download')
+  const response = await fetch('http://172.16.0.108:3000/api/visitantes/download');
   if (!response.ok) {
-    toast.error('Error interno del servidor al descargar reporte')
-    throw new Error('Error al descargar el reporte')
+    toast.error('Error interno del servidor al descargar reporte');
+    throw new Error('Error al descargar el reporte');
   }
   const data = await response.blob();
   const url = URL.createObjectURL(data);
@@ -139,14 +138,25 @@ const downloadReport = async () => {
   link.download = 'REPORTE_VISITAS_C&C.xlsx';
   link.click();
   URL.revokeObjectURL(url);
-  toast.success(`${link.download} descargado con exito`);
+  toast.success(`${link.download} descargado con éxito`, {
+    icon: 'fa-solid fa-download',
+  });
   console.log('Reporte descargado');
 };
 
+
+const showAll = async () =>{
+  query.value = '';
+  await fetchVisitors();
+  await search();
+}
 // Método de búsqueda
 const search = async () => {
   try {
-    const response = await fetch(`http://172.16.0.115:3000/api/visitantes/search?query=${encodeURIComponent(query.value)}`);
+    if (!query.value) {
+      filteredVisitors.value = visitors.value;
+    }
+    const response = await fetch(`http://172.16.0.108:3000/api/visitantes/search?query=${encodeURIComponent(query.value)}`);
     if (!response.ok) throw new Error('Error en la búsqueda');
     const data = await response.json();
     if (Array.isArray(data)) {
@@ -161,18 +171,33 @@ const search = async () => {
 
 // Función de logout
 const logout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('nombre');
+  sessionStorage.removeItem('token');
+  sessionStorage.removeItem('nombre');
   router.push({ name: 'login' });
 };
+
+const formatFecha = (fecha) => {
+  const date = new Date(fecha);
+  // Ajusta la fecha restando las horas que necesites
+  date.setHours(date.getHours() + 5); // Cambia -5 por la diferencia horaria necesaria
+  const opciones = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  };
+  return date.toLocaleString('es-ES', opciones);
+};
+
+
 
 // Cargar datos al montar el componente
 onMounted(() => {
   fetchUserData();
   fetchVisitors();
 });
-
-
 </script>
 
 <style scoped>
@@ -182,7 +207,7 @@ onMounted(() => {
   padding: 0;
   box-sizing: border-box;
   font-family: 'Montserrat', sans-serif !important;
-  text-align:center;
+  text-align: center;
 }
 
 .header {
@@ -255,14 +280,14 @@ onMounted(() => {
 }
 
 .btn-outline-info:hover {
-  background-color: #0cc5f3;
+  background-color: #173e86;
   color: white;
 }
 
 
 /* Tabla */
 .table-responsive {
-  max-height: 500px;
+  max-height: 570px !important;
   overflow-y: auto;
 }
 
@@ -277,8 +302,8 @@ onMounted(() => {
   z-index: 100;
   background-color: #4c6a8a;
   box-shadow: 0 2px 2px rgba(243, 240, 240, 0.1); 
+  vertical-align: middle;
 }
-
 
 .table td, .table th {
   padding: 0px;
@@ -293,7 +318,6 @@ onMounted(() => {
   max-height: 500px;
   overflow-y: auto;
 }
-
 
 /* Formulario de búsqueda */
 .form-control {
