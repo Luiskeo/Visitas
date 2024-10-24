@@ -168,7 +168,7 @@ body {
 
 .input {
   width: 100%;
-  padding: 10px 10px 10px 30px; /* Añadido padding izquierdo para el icono */
+  padding: 10px 10px 10px 30px; 
   margin-bottom: 16px;
   border: 1px solid #d0d0d0;
   border-radius: 4px;
@@ -217,7 +217,7 @@ body {
   }
 
   .input {
-    padding: 8px 10px 8px 30px; /* Ajustar padding para pantallas pequeñas */
+    padding: 8px 10px 8px 30px; 
     font-size: 0.9rem;
   }
 
@@ -238,7 +238,7 @@ body {
   }
 
   .input {
-    padding: 6px 10px 6px 30px; /* Ajustar padding para pantallas pequeñas */
+    padding: 6px 10px 6px 30px; 
     font-size: 0.85rem;
   }
 

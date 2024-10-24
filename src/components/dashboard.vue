@@ -144,7 +144,7 @@ const downloadReport = async () => {
   console.log('Reporte descargado');
 };
 
-
+// Función para mostrar todos los visitantes
 const showAll = async () =>{
   query.value = '';
   await fetchVisitors();
@@ -179,7 +179,7 @@ const logout = () => {
 const formatFecha = (fecha) => {
   const date = new Date(fecha);
   // Ajusta la fecha restando las horas que necesites
-  date.setHours(date.getHours() + 5); // Cambia -5 por la diferencia horaria necesaria
+  date.setHours(date.getHours() + 5); 
   const opciones = {
     year: 'numeric',
     month: 'long',
